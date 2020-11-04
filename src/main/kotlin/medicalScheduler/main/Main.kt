@@ -4,6 +4,8 @@ import com.github.ajalt.mordant.terminal.Terminal
 import mu.KotlinLogging
 import com.github.ajalt.mordant.terminal.TextColors.*
 import com.github.ajalt.mordant.terminal.TextStyles.*
+import medicalScheduler.models.Appointment
+import medicalScheduler.models.Prescription
 
 val t = Terminal()
 private val logger = KotlinLogging.logger {}
@@ -13,6 +15,11 @@ val title = (bold+green+underline)
 val option = (yellow)
 val error = (brightYellow on red)
 
+var appointment = Appointment()
+val appointments = ArrayList<Appointment>()
+
+var prescription = Prescription()
+val prescriptions = ArrayList<Prescription>()
 
 
 fun main(args: Array<String>){
@@ -68,7 +75,23 @@ fun menu(): Int {
 
 fun addAppointment(){
 
-    println("Create appointments to be implemented!")
+    appointment.id++
+    t.println(title("Add Appointment"))
+    t.print("Enter the type of appointment: ")
+    appointment.type = readLine()!!
+    t.print("Enter the appointment date: ")
+    appointment.date = readLine()!!
+    t.print("Enter the doctor's name: ")
+    appointment.doctorName = readLine()!!
+    t.print("Enter the location of the appointment: ")
+    appointment.location = readLine()!!
+
+    if(appointment.type.isNotEmpty() && appointment.date.isNotEmpty() && appointment.doctorName.isNotEmpty() && appointment.location.isNotEmpty()) {
+        appointments.add(appointment.copy())
+        logger.info("Appointment added : [$appointment]")
+    } else {
+        logger.info("Appointment not added.")
+    }
 }
 
 fun updateAppointment(){
@@ -87,8 +110,9 @@ fun updatePrescription(){
 }
 
 fun listAppointments(){
-
-    println("List appointments to be implemented!")
+    println("Listing appointments...")
+    println()
+    appointments.forEach{logger.info("$it")}
 }
 
 fun listPrescriptions(){
