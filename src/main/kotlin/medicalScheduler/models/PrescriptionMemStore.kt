@@ -31,4 +31,8 @@ class PrescriptionMemStore: PrescriptionStore{
             foundPrescription.timesDaily = prescription.timesDaily
         }
     }
+
+    internal fun logAll(){
+        prescriptions.forEach{println("${it}")}
+    }
 }

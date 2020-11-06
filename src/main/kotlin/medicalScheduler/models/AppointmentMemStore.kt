@@ -37,4 +37,9 @@ class AppointmentMemStore: AppointmentStore{
             foundAppointment.location = appointment.location
         }
     }
+
+    internal fun logAll(){
+        appointments.forEach{println("${it}")}
+        println()
+    }
 }
