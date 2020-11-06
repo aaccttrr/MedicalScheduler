@@ -31,8 +31,8 @@ fun main(args: Array<String>){
         input= menu()
         when(input){
             1 -> addAppointment()
-            2 -> addPrescription()
-            3 -> updateAppointment()
+            2 -> updateAppointment()
+            3 -> addPrescription()
             4 -> updatePrescription()
             5 -> listAppointments()
             6 -> listPrescriptions()
@@ -73,6 +73,7 @@ fun menu(): Int {
 
 }
 
+//Adding appointments function
 fun addAppointment(){
 
     appointment.id++
@@ -88,15 +89,37 @@ fun addAppointment(){
 
     if(appointment.type.isNotEmpty() && appointment.date.isNotEmpty() && appointment.doctorName.isNotEmpty() && appointment.location.isNotEmpty()) {
         appointments.add(appointment.copy())
-        logger.info("Appointment added : [$appointment]")
+        println("Appointment added : [$appointment]")
     } else {
-        logger.info("Appointment not added.")
+        println("Appointment not added.")
     }
 }
 
+//Updating appointments functions
 fun updateAppointment(){
 
-    println("Update appointments to be implemented!")
+    t.println(title("Update Appointment"))
+    println()
+    listAppointments()
+    var searchId = getId()
+    val anAppointment = searchAppointments(searchId)
+
+    if(anAppointment != null){
+        t.print(red("Enter a new type for "+anAppointment.type+" : "))
+        anAppointment.type = readLine()!!
+        t.print(red("Enter a new date for "+anAppointment.date+" : "))
+        anAppointment.date = readLine()!!
+        t.print(red("Enter a new doctor name for "+anAppointment.doctorName+" : "))
+        anAppointment.doctorName = readLine()!!
+        t.print(red("Enter a new location for "+anAppointment.location+" : "))
+        anAppointment.location = readLine()!!
+        t.println(green(
+                "Appointment updated to "+anAppointment.type+", "+anAppointment.date+", "
+                        +anAppointment.doctorName+", "+anAppointment.location+"."
+        ))
+    } else {
+        t.println(error("Appointment not added."))
+    }
 }
 
 fun addPrescription(){
@@ -112,7 +135,7 @@ fun updatePrescription(){
 fun listAppointments(){
     println("Listing appointments...")
     println()
-    appointments.forEach{logger.info("$it")}
+    appointments.forEach{t.println(green("$it"))}
 }
 
 fun listPrescriptions(){
@@ -120,3 +143,19 @@ fun listPrescriptions(){
     println("List prescriptions to be implemented!")
 }
 
+fun getId() : Long {
+
+    var strId : String?
+    var searchId : Long
+    print("Enter the ID of the appointment/ prescription: ")
+    strId = readLine()!!
+    searchId = if (strId.toLongOrNull() != null && !strId.isEmpty())
+        strId.toLong()
+    else
+        -9
+    return searchId
+}
+
+fun searchAppointments(id: Long) : Appointment?{
+    return appointments.find { a -> a.id == id }
+}
