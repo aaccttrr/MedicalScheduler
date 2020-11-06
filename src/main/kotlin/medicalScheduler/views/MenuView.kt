@@ -2,22 +2,15 @@ package medicalScheduler.views
 
 import com.github.ajalt.mordant.terminal.Terminal
 import com.github.ajalt.mordant.terminal.TextColors.*
-import com.github.ajalt.mordant.terminal.TextStyles.*
 import medicalScheduler.main.option
 import medicalScheduler.main.t
 import medicalScheduler.main.title
-import medicalScheduler.main.appointment
-import medicalScheduler.main.appointments
-import medicalScheduler.main.prescription
-import medicalScheduler.main.prescriptions
-import medicalScheduler.models.AppointmentModel
-import medicalScheduler.models.AppointmentMemStore
-import medicalScheduler.models.PrescriptionModel
-import medicalScheduler.models.PrescriptionMemStore
+import medicalScheduler.models.*
 
 val t = Terminal()
 
 class MenuView {
+
 
     fun menu(): Int {
 
@@ -46,13 +39,13 @@ class MenuView {
 
     }
 
-    fun listAppointments(appointments: AppointmentMemStore) {
+    fun listAppointments(appointments: AppointmentJSONStore) {
         t.println(green("Listing Appointments"))
         appointments.logAll()
         println()
     }
 
-    fun listPrescriptions(prescriptions: PrescriptionMemStore) {
+    fun listPrescriptions(prescriptions: PrescriptionJSONStore) {
         t.println(green("Listing Prescriptions"))
         println()
         prescriptions.logAll()
