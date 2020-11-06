@@ -25,7 +25,9 @@ class MenuView {
         t.println(option("4. Update a prescription"))
         t.println(option("5. List all appointments"))
         t.println(option("6. List all prescriptions"))
-        t.println(option("7. Exit"))
+        t.println(option("7. Delete an appointment"))
+        t.println(option("8. Delete a prescription"))
+        t.println(option("9. Exit"))
         println()
         t.print(red("Enter a choice: "))
         //Reads user input

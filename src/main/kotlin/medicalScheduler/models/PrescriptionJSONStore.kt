@@ -17,7 +17,7 @@ class PrescriptionJSONStore: PrescriptionStore{
     var prescriptions = mutableListOf<PrescriptionModel>()
 
     init {
-        if (exists(JSON_FILE)) {
+        if (exists(JSON_FILE2)) {
             deserialize()
         }
     }
@@ -34,6 +34,7 @@ class PrescriptionJSONStore: PrescriptionStore{
     override fun create(prescription: PrescriptionModel) {
         prescription.id = generateRandomId()
         prescriptions.add(prescription)
+        serialize()
     }
 
     override fun update(prescription: PrescriptionModel) {
@@ -43,6 +44,11 @@ class PrescriptionJSONStore: PrescriptionStore{
             foundPrescription.expiryDate = prescription.expiryDate
             foundPrescription.timesDaily = prescription.timesDaily
         }
+        serialize()
+    }
+
+    override fun delete(prescription: PrescriptionModel) {
+        prescriptions.remove(prescription)
         serialize()
     }
 
@@ -57,7 +63,7 @@ class PrescriptionJSONStore: PrescriptionStore{
     }
 
     private fun deserialize() {
-        val jsonString = read(JSON_FILE)
+        val jsonString = read(JSON_FILE2)
         prescriptions = Gson().fromJson(jsonString, listType2)
     }
 }

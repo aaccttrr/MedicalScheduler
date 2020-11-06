@@ -53,6 +53,11 @@ class AppointmentJSONStore: AppointmentStore{
         serialize()
     }
 
+    override fun delete(appointment: AppointmentModel){
+        appointments.remove(appointment)
+        serialize()
+    }
+
     internal fun logAll(){
         appointments.forEach{println("${it}")}
         println()

@@ -30,12 +30,14 @@ class MenuController {
                 4 -> updatePrescription()
                 5 -> menuView.listAppointments(appointments)
                 6 -> menuView.listPrescriptions(prescriptions)
+                7 -> deleteAppointment()
+                8 -> deletePrescription()
                 99 -> dummyData()
-                7 -> t.println(brightRed("Exiting..."))
+                9 -> t.println(brightRed("Exiting..."))
                 else -> t.println(error("Invalid option! Please enter a valid number."))
             }
             println()
-        } while(input != 7)
+        } while(input != 9)
         //Print log and finish process
         logger.info { "Shutting Down Medical Scheduler..." }
     }
@@ -106,6 +108,34 @@ class MenuController {
             t.println(error("Prescription not updated."))
 
 
+    }
+
+    fun deleteAppointment(){
+        menuView.listAppointments(appointments)
+        var searchId = menuView.getId()
+        val anAppointment = searchAppointments(searchId)
+
+        if(anAppointment != null){
+            appointments.delete(anAppointment)
+            t.println(red("Appointment Deleted."))
+            menuView.listAppointments(appointments)
+        }
+        else
+            t.print(error("Appointment not deleted."))
+    }
+
+    fun deletePrescription(){
+        menuView.listPrescriptions(prescriptions)
+        var searchId = menuView.getId()
+        val aPrescription = searchPrescriptions(searchId)
+
+        if(aPrescription != null){
+            prescriptions.delete(aPrescription)
+            t.println(red("Prescription Deleted."))
+            menuView.listPrescriptions(prescriptions)
+        }
+        else
+            t.print(error("Prescription not deleted."))
     }
 
     fun searchAppointments(id: Long) : AppointmentModel?{

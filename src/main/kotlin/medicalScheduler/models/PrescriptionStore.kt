@@ -5,4 +5,5 @@ interface PrescriptionStore {
     fun findOne(id: Long): PrescriptionModel?
     fun create(prescription: PrescriptionModel)
     fun update(prescription: PrescriptionModel)
+    fun delete(prescription: PrescriptionModel)
 }
