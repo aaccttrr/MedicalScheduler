@@ -4,8 +4,10 @@ import com.github.ajalt.mordant.terminal.Terminal
 import mu.KotlinLogging
 import com.github.ajalt.mordant.terminal.TextColors.*
 import com.github.ajalt.mordant.terminal.TextStyles.*
-import medicalScheduler.models.Appointment
-import medicalScheduler.models.Prescription
+import medicalScheduler.models.AppointmentMemStore
+import medicalScheduler.models.AppointmentModel
+import medicalScheduler.models.PrescriptionMemStore
+import medicalScheduler.models.PrescriptionModel
 
 val t = Terminal()
 private val logger = KotlinLogging.logger {}
@@ -15,11 +17,11 @@ val title = (bold+green+underline)
 val option = (yellow)
 val error = (brightYellow on red)
 
-var appointment = Appointment()
-val appointments = ArrayList<Appointment>()
+var appointment = AppointmentModel()
+val appointments = AppointmentMemStore()
 
-var prescription = Prescription()
-val prescriptions = ArrayList<Prescription>()
+var prescription = PrescriptionModel()
+val prescriptions = PrescriptionMemStore()
 
 
 fun main(args: Array<String>){
@@ -37,7 +39,7 @@ fun main(args: Array<String>){
             5 -> listAppointments()
             6 -> listPrescriptions()
             7 -> t.println(brightRed("Exiting..."))
-            else -> t.println(error("\n Invalid option! Please enter a valid number."))
+            else -> t.println(error("Invalid option! Please enter a valid number."))
         }
         println()
     } while(input != 7)
@@ -76,7 +78,6 @@ fun menu(): Int {
 //Adding appointments function
 fun addAppointment(){
 
-    appointment.id++
     t.println(title("Add Appointment"))
     t.print("Enter the type of appointment: ")
     appointment.type = readLine()!!
@@ -88,14 +89,14 @@ fun addAppointment(){
     appointment.location = readLine()!!
 
     if(appointment.type.isNotEmpty() && appointment.date.isNotEmpty() && appointment.doctorName.isNotEmpty() && appointment.location.isNotEmpty()) {
-        appointments.add(appointment.copy())
-        println("Appointment added : [$appointment]")
+        appointments.create(appointment.copy())
+        t.println(green("Appointment added : "+ appointment.type +" on "+ appointment.date +" with "+ appointment.doctorName +" in "+ appointment.location +"."))
     } else {
         println("Appointment not added.")
     }
 }
 
-//Updating appointments functions
+//Updating appointments function
 fun updateAppointment(){
 
     t.println(title("Update Appointment"))
@@ -103,44 +104,103 @@ fun updateAppointment(){
     listAppointments()
     var searchId = getId()
     val anAppointment = searchAppointments(searchId)
+    var tempType : String?
+    var tempDate : String?
+    var tempDoc : String?
+    var tempAdrs : String?
 
     if(anAppointment != null){
         t.print(red("Enter a new type for "+anAppointment.type+" : "))
-        anAppointment.type = readLine()!!
+        tempType = readLine()!!
         t.print(red("Enter a new date for "+anAppointment.date+" : "))
-        anAppointment.date = readLine()!!
+        tempDate = readLine()!!
         t.print(red("Enter a new doctor name for "+anAppointment.doctorName+" : "))
-        anAppointment.doctorName = readLine()!!
+        tempDoc = readLine()!!
         t.print(red("Enter a new location for "+anAppointment.location+" : "))
-        anAppointment.location = readLine()!!
-        t.println(green(
-                "Appointment updated to "+anAppointment.type+", "+anAppointment.date+", "
-                        +anAppointment.doctorName+", "+anAppointment.location+"."
-        ))
+        tempAdrs = readLine()!!
+
+        if(tempType.isNotEmpty() && tempDate.isNotEmpty() && tempDoc.isNotEmpty() && tempAdrs.isNotEmpty()) {
+            anAppointment.type = tempType
+            anAppointment.date = tempDate
+            anAppointment.doctorName = tempDoc
+            anAppointment.location = tempAdrs
+            t.println(green(
+                    "Appointment updated to " + anAppointment.type + ", " + anAppointment.date + ", "
+                            + anAppointment.doctorName + ", " + anAppointment.location + "."
+            ))
+        } else {
+            t.println(error("Appointment not updated."))
+        }
+
     } else {
-        t.println(error("Appointment not added."))
+        t.println(error("Appointment not updated."))
     }
 }
 
 fun addPrescription(){
 
-    println("Create prescriptions to be implemented!")
+    t.println(title("Add Prescription"))
+    t.print("Enter the name of the prescribed drug: ")
+    prescription.drug = readLine()!!
+    t.print("Enter the times it must be taken daily: ")
+    prescription.timesDaily = readLine()!!
+    t.print("Enter the expiry date: ")
+    prescription.expiryDate = readLine()!!
+
+    if(prescription.drug.isNotEmpty() && prescription.timesDaily.isNotEmpty() && prescription.expiryDate.isNotEmpty()) {
+        prescriptions.create(prescription.copy())
+        t.println(green("Prescription added : "+ prescription.drug +" taken "+ prescription.timesDaily +" times daily. Expires on "+ prescription.expiryDate +"."))
+    } else {
+        println("Prescription not added.")
+    }
 }
 
 fun updatePrescription(){
 
-    println("Update prescriptions to be implemented!")
+    t.println(title("Update Prescription"))
+    println()
+    listPrescriptions()
+    var searchId = getId()
+    val aPrescription = searchPrescriptions(searchId)
+    var tempDrug : String?
+    var tempTimesDaily : String?
+    var tempExpiry : String?
+
+    if(aPrescription != null) {
+        t.print(red("Enter a new drug for " + aPrescription.drug + " : "))
+        tempDrug = readLine()!!
+        t.print(red("Enter a new amount to take daily instead of " + aPrescription.timesDaily + " : "))
+        tempTimesDaily = readLine()!!
+        t.print(red("Enter a new expiry date instead of " + aPrescription.expiryDate + " : "))
+        tempExpiry = readLine()!!
+
+        if(tempDrug.isNotEmpty() && tempTimesDaily.isNotEmpty() && tempExpiry.isNotEmpty()){
+            aPrescription.drug = tempDrug
+            aPrescription.timesDaily = tempTimesDaily
+            aPrescription.expiryDate = tempExpiry
+            t.println(green("Prescription updated to : "+aPrescription.drug+", taken "
+                    +aPrescription.timesDaily+" times daily, expires on "+aPrescription.expiryDate+"."))
+        } else {
+            t.println(error("Prescription not updated."))
+        }
+    } else{
+        t.println(error("Prescription not updated."))
+    }
+
+
 }
 
 fun listAppointments(){
     println("Listing appointments...")
     println()
-    appointments.forEach{t.println(green("$it"))}
+    println(appointments.findAll())
 }
 
 fun listPrescriptions(){
 
-    println("List prescriptions to be implemented!")
+    println("Listing prescriptions...")
+    println()
+    println(prescriptions.findAll())
 }
 
 fun getId() : Long {
@@ -156,6 +216,10 @@ fun getId() : Long {
     return searchId
 }
 
-fun searchAppointments(id: Long) : Appointment?{
-    return appointments.find { a -> a.id == id }
+fun searchAppointments(id: Long) : AppointmentModel?{
+    return appointments.findOne(id)
+}
+
+fun searchPrescriptions(id: Long): PrescriptionModel?{
+    return prescriptions.findOne(id)
 }

@@ -1,8 +1,8 @@
 package medicalScheduler.models
 
-data class Prescription(
+data class PrescriptionModel(
     var id: Long = 0,
     var drug: String = "",
-    var timesDaily: Int = 0,
+    var timesDaily: String = "",
     var expiryDate: String = ""
 )
